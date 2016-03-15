@@ -47,6 +47,7 @@ public class Test0Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     public void init(View view){
+
         swipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeColors(R.color.white,R.color.blue,R.color.green,R.color.black);
@@ -61,4 +62,5 @@ public class Test0Fragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onRefresh() {
         handler.sendEmptyMessageDelayed(1, 2000);
     }
+
 }

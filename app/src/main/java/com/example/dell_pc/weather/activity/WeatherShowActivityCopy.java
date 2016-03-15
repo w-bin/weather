@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.dell_pc.weather.R;
+import com.example.dell_pc.weather.model.CountryControllerListViewItem;
+import com.example.dell_pc.weather.model.WeatherDB;
 import com.example.dell_pc.weather.util.HttpCallbackListener;
 import com.example.dell_pc.weather.util.HttpUtil;
 import com.example.dell_pc.weather.util.LogUtil;
@@ -20,7 +22,7 @@ import com.example.dell_pc.weather.util.Utility;
 /**
  * Created by dell-pc on 2016/3/10.
  */
-public class WeatherShowActivityCopy extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class WeatherShowActivityCopy extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private TextView titleText;
     private TextView cityNameText;
@@ -31,11 +33,9 @@ public class WeatherShowActivityCopy extends Fragment implements SwipeRefreshLay
     private TextView currentDateText;
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private android.os.Handler handler=new android.os.Handler(){
-        public void handleMessage(android.os.Message msg)
-        {
-            switch (msg.what)
-            {
+    private android.os.Handler handler = new android.os.Handler() {
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
                 case 1:
                     swipeRefreshLayout.setRefreshing(true);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -47,6 +47,7 @@ public class WeatherShowActivityCopy extends Fragment implements SwipeRefreshLay
             }
         }
     };
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.weather_show_layout, container, false);
@@ -63,9 +64,9 @@ public class WeatherShowActivityCopy extends Fragment implements SwipeRefreshLay
         temp2Text = (TextView) view.findViewById(R.id.temp2);
         currentDateText = (TextView) view.findViewById(R.id.current_date);
 
-        swipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.weather_show_swipeRefreshLayout);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.weather_show_swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setColorSchemeColors(R.color.red,R.color.blue,R.color.green,R.color.black);
+        swipeRefreshLayout.setColorSchemeColors(R.color.blue);
 
         String countryCode = getActivity().getIntent().getStringExtra("country_code");
         if (!TextUtils.isEmpty(countryCode)) {
@@ -130,7 +131,7 @@ public class WeatherShowActivityCopy extends Fragment implements SwipeRefreshLay
     //从SharedPreferences文件中读取存储的天气信息，并显示到界面上
     private void showWeather() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        titleText.setText(preferences.getString("city_name", ""));
+        titleText.setText("天气详情");
         cityNameText.setText(preferences.getString("city_name", ""));
         temp1Text.setText(preferences.getString("temp1", ""));
         temp2Text.setText(preferences.getString("temp2", ""));
@@ -138,10 +139,22 @@ public class WeatherShowActivityCopy extends Fragment implements SwipeRefreshLay
         publishTimeText.setText(preferences.getString("publish_time", "") + "发布");
         currentDateText.setText(preferences.getString("current_date", ""));
         swipeRefreshLayout.setRefreshing(false);        //将进度条关闭
+
+        //如果是从CountryController 跳转而来，则将获取的天气信息存储到数据库
+        if (getActivity().getIntent().getBooleanExtra("isFromCountryController", false)) {
+            CountryControllerListViewItem item = new CountryControllerListViewItem(preferences.getString("city_name", ""),
+                    preferences.getString("weather_code", ""), preferences.getString("temp1", ""),
+                    preferences.getString("temp2", ""), preferences.getString("weather_desp", ""),
+                    preferences.getString("publish_time", ""));
+            WeatherDB weatherDB=WeatherDB.getInstance(getActivity());
+            weatherDB.saveCountryController(item);
+            getActivity().getIntent().putExtra("isFromCountryController", false);
+        }
     }
 
     @Override
     public void onRefresh() {
-        handler.sendEmptyMessageDelayed(1,2000);
+        handler.sendEmptyMessageDelayed(1, 2000);
     }
+
 }

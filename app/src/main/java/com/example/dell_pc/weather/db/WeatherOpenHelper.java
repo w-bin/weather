@@ -3,9 +3,6 @@ package com.example.dell_pc.weather.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-import com.example.dell_pc.weather.activity.MainActivity;
 
 /**
  * Created by dell-pc on 2016/3/7.
@@ -40,6 +37,14 @@ public class WeatherOpenHelper extends SQLiteOpenHelper {
             + COUNTRY_CODE + " text, "
             + CITY_ID + " integer)";
 
+    private static final String CREATE_COUNTRY_CONTROLLER="create table CountryController ("
+            +"id integer primary key autoincrement, "
+            +"country_name text, "
+            +"weather_code text, "
+            +"temp1 text, "
+            +"temp2 text, "
+            +"weather_desp text, "
+            +"publish_time text)";
 
     public WeatherOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -50,12 +55,11 @@ public class WeatherOpenHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_PROVINCE);
         db.execSQL(CREATE_CITY);
         db.execSQL(CREATE_COUNTRY);
+        db.execSQL(CREATE_COUNTRY_CONTROLLER);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("drop table if exists my_weather");
-        Log.e(MainActivity.class.toString(),"dorp!!!!!!!!!!!!");
-        onCreate(db);
+       // db.execSQL(CREATE_COUNTRY_CONTROLLER);
     }
 }

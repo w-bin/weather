@@ -39,7 +39,7 @@ public class MyBaseActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                item.setChecked(true);
+                //item.setChecked(true);
                 switch (item.getItemId()) {
                     case R.id.item_1:
                         Test0Fragment fragment = new Test0Fragment();
@@ -51,7 +51,6 @@ public class MyBaseActivity extends AppCompatActivity {
                         editor.putBoolean("city_selected", false);
                         editor.commit();
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyBaseActivity.this);
-                        LogUtil.e("MyBaseActivity", preferences.getBoolean("city_selected", false) + "");
                         MainActivityCopy mainActivityCopy = new MainActivityCopy();
                         FragmentManager fragmentManager1 = getFragmentManager();
                         fragmentManager1.beginTransaction().replace(R.id.content_frame, mainActivityCopy).commit();
@@ -60,6 +59,11 @@ public class MyBaseActivity extends AppCompatActivity {
                         WeatherShowActivityCopy weatherShowActivityCopy = new WeatherShowActivityCopy();
                         FragmentManager fragmentManager2 = getFragmentManager();
                         fragmentManager2.beginTransaction().replace(R.id.content_frame, weatherShowActivityCopy).commit();
+                        break;
+                    case R.id.item_0:
+                        CountryControllerActivity countryControllerActivity =new CountryControllerActivity();
+                        FragmentManager fragmentManager3=getFragmentManager();
+                        fragmentManager3.beginTransaction().replace(R.id.content_frame, countryControllerActivity).commit();
                         break;
                     default:
                         break;

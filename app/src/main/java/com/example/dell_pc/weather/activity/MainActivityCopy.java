@@ -3,9 +3,7 @@ package com.example.dell_pc.weather.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +21,6 @@ import com.example.dell_pc.weather.model.Province;
 import com.example.dell_pc.weather.model.WeatherDB;
 import com.example.dell_pc.weather.util.HttpCallbackListener;
 import com.example.dell_pc.weather.util.HttpUtil;
-import com.example.dell_pc.weather.util.LogUtil;
 import com.example.dell_pc.weather.util.Utility;
 
 import java.util.ArrayList;
@@ -59,15 +56,14 @@ public class MainActivityCopy extends Fragment {
 
     protected void init(View view) {
         //isFromWeatherActivity = getActivity().getIntent().getBooleanExtra("from_weather_activity", false);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    /*    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         LogUtil.e(getActivity().toString(),preferences.getBoolean("city_selected",false)+"");
         if (preferences.getBoolean("city_selected", false)) {// && !isFromWeatherActivity) {
             WeatherShowActivityCopy weatherShowActivityCopy = new WeatherShowActivityCopy();
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, weatherShowActivityCopy).commit();
             return;
-        }
-
+        }*/
 
         listView = (ListView) view.findViewById(R.id.listView);
         titleText = (TextView) getActivity().findViewById(R.id.title_text);
@@ -226,4 +222,5 @@ public class MainActivityCopy extends Fragment {
         } else {
         }*/
     }
+
 }

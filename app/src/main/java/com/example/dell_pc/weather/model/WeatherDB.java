@@ -14,7 +14,7 @@ import java.util.List;
  * Created by dell-pc on 2016/3/7.
  */
 public class WeatherDB {
-    public static final String DB_NAME = "my_weather6";
+    public static final String DB_NAME = "my_weather7";
     public static final int VERSION = 1;
     private static WeatherDB weatherDB;
     private SQLiteDatabase db;
@@ -119,6 +119,49 @@ public class WeatherDB {
             }while (cursor.moveToNext());
         }
         if(cursor!=null){
+            cursor.close();
+        }
+        return list;
+    }
+
+    //将某country的天气状况存储到数据库
+    public void saveCountryController(CountryControllerListViewItem item){
+        Cursor cursor=db.query("CountryController",null,"country_name=?",new String[]{item.getCountryName()},null,null,null);
+        if(cursor.moveToFirst())    return;    //数据库已经存在过的就不再存储到数据库
+        if(item!=null){
+            ContentValues values=new ContentValues();
+            values.put("country_name",item.getCountryName());
+            values.put("weather_code",item.getWeatherCode());
+            values.put("temp1",item.getTemp1());
+            values.put("temp2",item.getTemp2());
+            values.put("weather_desp",item.getWeatherDesp());
+            values.put("publish_time",item.getPublishTime());
+            db.insert("CountryController", null, values);
+        }
+    }
+
+    //将某country的天气状况从数据库中删除
+    public void deleteCountryController(String countryName){
+        db.delete("CountryController","country_name=?",new String[]{countryName});
+    }
+
+    //从数据库读取选择过的countrise天气情况
+    public List<CountryControllerListViewItem> loadCountryControllerItem(){
+        List<CountryControllerListViewItem> list = new ArrayList<CountryControllerListViewItem>();
+        Cursor cursor = db.query("CountryController", null, null, null, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                CountryControllerListViewItem countryControllerListViewItem = new CountryControllerListViewItem();
+                countryControllerListViewItem.setCountryName(cursor.getString(cursor.getColumnIndex("country_name")));
+                countryControllerListViewItem.setWeatherCode(cursor.getString(cursor.getColumnIndex("weather_code")));
+                countryControllerListViewItem.setTemp1(cursor.getString(cursor.getColumnIndex("temp1")));
+                countryControllerListViewItem.setTemp2(cursor.getString(cursor.getColumnIndex("temp2")));
+                countryControllerListViewItem.setWeatherDesp(cursor.getString(cursor.getColumnIndex("weather_desp")));
+                countryControllerListViewItem.setPublishTime(cursor.getString(cursor.getColumnIndex("publish_time")));
+                list.add(countryControllerListViewItem);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
             cursor.close();
         }
         return list;
