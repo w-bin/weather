@@ -7,7 +7,25 @@ public class Country {
     private int id;
     private String countryName;
     private String countryCode;
+    private String cityName;
+    private String provinceName;
     private int cityId;
+
+    public String getProvinceName() {
+        return provinceName;
+    }
+
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
 
     public int getId() {
         return id;

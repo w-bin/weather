@@ -6,34 +6,38 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dell_pc.weather.R;
+import com.example.dell_pc.weather.model.WeatherDB;
 import com.example.dell_pc.weather.util.LogUtil;
 
 /**
  * Created by dell-pc on 2016/3/11.
  */
-public class MyBaseActivity extends AppCompatActivity {
+public class MyBaseActivity extends ActionBarActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+    static WeatherDB weatherDB;
+    private TextView titleText;
+    public static String title="天气APP";
 
     @Override
     protected void onCreate(Bundle savedInstancesState) {
         super.onCreate(savedInstancesState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.base_activity);
+        weatherDB=WeatherDB.getInstance(this);
         initView();
-
-       // toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //toolbar.inflateMenu(R.menu.toolbar_menu);   //设置右上角的填充菜单
 
         navigationView.setItemIconTintList(null);   //设置菜单图标恢复本来的颜色
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -51,19 +55,19 @@ public class MyBaseActivity extends AppCompatActivity {
                         editor.putBoolean("city_selected", false);
                         editor.commit();
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyBaseActivity.this);
-                        MainActivityCopy mainActivityCopy = new MainActivityCopy();
+                        MainListFragment mainListFragment = new MainListFragment();
                         FragmentManager fragmentManager1 = getFragmentManager();
-                        fragmentManager1.beginTransaction().replace(R.id.content_frame, mainActivityCopy).commit();
+                        fragmentManager1.beginTransaction().replace(R.id.content_frame, mainListFragment).commit();
                         break;
                     case R.id.item_3:
-                        WeatherShowActivityCopy weatherShowActivityCopy = new WeatherShowActivityCopy();
+                        WeatherShowFragment weatherShowFragment = new WeatherShowFragment();
                         FragmentManager fragmentManager2 = getFragmentManager();
-                        fragmentManager2.beginTransaction().replace(R.id.content_frame, weatherShowActivityCopy).commit();
+                        fragmentManager2.beginTransaction().replace(R.id.content_frame, weatherShowFragment).commit();
                         break;
                     case R.id.item_0:
-                        CountryControllerActivity countryControllerActivity =new CountryControllerActivity();
+                        CountryControllerFragment countryControllerFragment =new CountryControllerFragment();
                         FragmentManager fragmentManager3=getFragmentManager();
-                        fragmentManager3.beginTransaction().replace(R.id.content_frame, countryControllerActivity).commit();
+                        fragmentManager3.beginTransaction().replace(R.id.content_frame, countryControllerFragment).commit();
                         break;
                     default:
                         break;
@@ -75,11 +79,14 @@ public class MyBaseActivity extends AppCompatActivity {
     }
 
     private void initView() {
+        titleText=(TextView)findViewById(R.id.title_text);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
-        toolbar.inflateMenu(R.menu.toolbar_menu);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
             @Override
             public void onDrawerOpened(View drawerView) {
@@ -93,6 +100,7 @@ public class MyBaseActivity extends AppCompatActivity {
                 invalidateOptionsMenu();    //调用onPrepareOptionsMenu
             }
         };
+        actionBarDrawerToggle.syncState();
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
     }
 
@@ -100,7 +108,29 @@ public class MyBaseActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isDrawerOpen = drawerLayout.isDrawerOpen(navigationView);
         LogUtil.e(MyBaseActivity.class + "", isDrawerOpen + "");
-        //menu.findItem(R.id.action_notification).setVisible(!isDrawerOpen);
+        if(isDrawerOpen){
+            title=titleText.getText().toString();
+            titleText.setText("请选择");
+        }else{
+            titleText.setText(title);
+        }
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        Toast.makeText(MyBaseActivity.this,id+"",Toast.LENGTH_SHORT).show();
+        return super.onOptionsItemSelected(item);
     }
 }

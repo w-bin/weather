@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.dell_pc.weather.R;
+import com.example.dell_pc.weather.util.LogUtil;
 
 import java.util.List;
 
@@ -24,19 +25,61 @@ public class CountryControllerAdapter extends ArrayAdapter<CountryControllerList
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        CountryControllerListViewItem item=getItem(position);
-        View view= LayoutInflater.from(getContext()).inflate(resourceId, null);
-        TextView cityName=(TextView)view.findViewById(R.id.item_country_name);
-        TextView temp1=(TextView)view.findViewById(R.id.item_temp1);
-        TextView temp2=(TextView)view.findViewById(R.id.item_temp2);
-        TextView weatherDesp=(TextView)view.findViewById(R.id.item_weather_desp);
-        TextView publishTime=(TextView)view.findViewById(R.id.item_publish_time);
+        CountryControllerListViewItem item = getItem(position);
+        View view;
+        ViewHolder viewHolder;
+        if(convertView==null){
+            view = LayoutInflater.from(getContext()).inflate(resourceId, null);
+            viewHolder=new ViewHolder();
+            viewHolder.countryName=(TextView) view.findViewById(R.id.item_country_name);
+            viewHolder.weatherDesp = (TextView) view.findViewById(R.id.item_weather_desp);
+            viewHolder.temp = (TextView) view.findViewById(R.id.item_temp);
+            viewHolder.publishTime = (TextView) view.findViewById(R.id.item_publish_time);
+            viewHolder.updateTime = (TextView) view.findViewById(R.id.item_update_time);
+            view.setTag(viewHolder);
+        }else{
+            view=convertView;
+            viewHolder=(ViewHolder)view.getTag();
+        }
 
-        cityName.setText(item.getCountryName());
-        temp1.setText(item.getTemp1());
-        temp2.setText(item.getTemp2());
-        weatherDesp.setText(item.getWeatherDesp());
-        publishTime.setText(item.getPublishTime());
+        viewHolder.countryName.setText(item.getProvinceName()+"-"+item.getCityName()+"-"+item.getCountryName());
+        viewHolder.weatherDesp.setText(item.getWeatherDesp());
+        viewHolder.temp.setText(item.getTemp2()+" 至 "+item.getTemp1());
+        viewHolder.publishTime.setText(item.getPublishTime()+"发布");
+        viewHolder.updateTime.setText(item.getUpdateTime());
         return view;
+    }
+
+    //局部更新数据
+    public void updateView(View view,CountryControllerListViewItem item,int position){
+        if(view==null){
+            return;
+        }
+        ViewHolder viewHolder;
+        if(view.getTag()!=null){
+            viewHolder= (ViewHolder) view.getTag();
+        }else{
+            viewHolder=new ViewHolder();
+            viewHolder.countryName=(TextView) view.findViewById(R.id.item_country_name);
+            viewHolder.weatherDesp = (TextView) view.findViewById(R.id.item_weather_desp);
+            viewHolder.temp = (TextView) view.findViewById(R.id.item_temp);
+            viewHolder.publishTime = (TextView) view.findViewById(R.id.item_publish_time);
+            viewHolder.updateTime = (TextView) view.findViewById(R.id.item_update_time);
+        }
+
+        LogUtil.e(CountryControllerAdapter.class+"",item.getUpdateTime()+"!!!");
+        viewHolder.countryName.setText(item.getProvinceName()+"-"+item.getCityName()+"-"+item.getCountryName());
+        viewHolder.weatherDesp.setText(item.getWeatherDesp());
+        viewHolder.temp.setText(item.getTemp2()+" 至 "+item.getTemp1());
+        viewHolder.publishTime.setText(item.getPublishTime()+"发布");
+        viewHolder.updateTime.setText(item.getUpdateTime());
+    }
+
+    class ViewHolder {
+        TextView countryName;
+        TextView weatherDesp;
+        TextView temp;
+        TextView publishTime;
+        TextView updateTime;
     }
 }

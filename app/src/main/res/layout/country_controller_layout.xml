@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -15,12 +16,8 @@
             android:divider="@color/white"
             android:dividerHeight="18dp"/>
     </android.support.v4.widget.SwipeRefreshLayout>
-    <Button
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/country_controller_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:text="+"
-        android:textSize="50sp"/>
-</RelativeLayout>
+        android:layout_gravity="bottom|end"
+        style="@style/FabStyle" />
+</android.support.design.widget.CoordinatorLayout>

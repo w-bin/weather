@@ -9,10 +9,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
-
-        </activity>
-        <activity android:name=".activity.WeatherShowActivity" />
         <activity android:name=".activity.MyBaseActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

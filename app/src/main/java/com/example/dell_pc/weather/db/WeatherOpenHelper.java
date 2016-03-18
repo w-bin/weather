@@ -29,22 +29,28 @@ public class WeatherOpenHelper extends SQLiteOpenHelper {
             + "id integer primary key autoincrement, "
             + CITY_NAME + " text, "
             + CITY_CODE + " text, "
+            + PROVINCE_NAME + " text, "
             + PROVINCE_ID + " integer)";
 
     private static final String CREATE_COUNTRY = "create table Country ("
             + "id integer primary key autoincrement, "
             + COUNTRY_NAME + " text, "
             + COUNTRY_CODE + " text, "
+            + CITY_NAME + " text, "
+            + PROVINCE_NAME + " text, "
             + CITY_ID + " integer)";
 
-    private static final String CREATE_COUNTRY_CONTROLLER="create table CountryController ("
-            +"id integer primary key autoincrement, "
-            +"country_name text, "
-            +"weather_code text, "
-            +"temp1 text, "
-            +"temp2 text, "
-            +"weather_desp text, "
-            +"publish_time text)";
+    private static final String CREATE_COUNTRY_CONTROLLER = "create table CountryController ("
+            + "id integer primary key autoincrement, "
+            + "province_name text, "
+            + "city_name text, "
+            + "country_name text, "
+            + "weather_code text, "
+            + "temp1 text, "
+            + "temp2 text, "
+            + "weather_desp text, "
+            + "publish_time text, "
+            + "update_time text)";
 
     public WeatherOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -60,6 +66,6 @@ public class WeatherOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-       // db.execSQL(CREATE_COUNTRY_CONTROLLER);
+        // db.execSQL(CREATE_COUNTRY_CONTROLLER);
     }
 }
