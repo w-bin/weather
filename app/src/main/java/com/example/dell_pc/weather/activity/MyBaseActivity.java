@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,14 +30,14 @@ public class MyBaseActivity extends ActionBarActivity {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     static WeatherDB weatherDB;
     private TextView titleText;
-    public static String title="天气APP";
+    public static String title = "天气APP";
 
     @Override
     protected void onCreate(Bundle savedInstancesState) {
         super.onCreate(savedInstancesState);
         //requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.base_activity);
-        weatherDB=WeatherDB.getInstance(this);
+        weatherDB = WeatherDB.getInstance(this);
         initView();
 
         navigationView.setItemIconTintList(null);   //设置菜单图标恢复本来的颜色
@@ -65,8 +66,8 @@ public class MyBaseActivity extends ActionBarActivity {
                         fragmentManager2.beginTransaction().replace(R.id.content_frame, weatherShowFragment).commit();
                         break;
                     case R.id.item_0:
-                        CountryControllerFragment countryControllerFragment =new CountryControllerFragment();
-                        FragmentManager fragmentManager3=getFragmentManager();
+                        CountryControllerFragment countryControllerFragment = new CountryControllerFragment();
+                        FragmentManager fragmentManager3 = getFragmentManager();
                         fragmentManager3.beginTransaction().replace(R.id.content_frame, countryControllerFragment).commit();
                         break;
                     default:
@@ -79,7 +80,7 @@ public class MyBaseActivity extends ActionBarActivity {
     }
 
     private void initView() {
-        titleText=(TextView)findViewById(R.id.title_text);
+        titleText = (TextView) findViewById(R.id.title_text);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -108,10 +109,10 @@ public class MyBaseActivity extends ActionBarActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean isDrawerOpen = drawerLayout.isDrawerOpen(navigationView);
         LogUtil.e(MyBaseActivity.class + "", isDrawerOpen + "");
-        if(isDrawerOpen){
-            title=titleText.getText().toString();
+        if (isDrawerOpen) {
+            title = titleText.getText().toString();
             titleText.setText("请选择");
-        }else{
+        } else {
             titleText.setText(title);
         }
         return super.onPrepareOptionsMenu(menu);
@@ -130,7 +131,19 @@ public class MyBaseActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        Toast.makeText(MyBaseActivity.this,id+"",Toast.LENGTH_SHORT).show();
+        Toast.makeText(MyBaseActivity.this, id + "", Toast.LENGTH_SHORT).show();
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getFragmentManager().getBackStackEntryCount() > 0) {
+                getFragmentManager().popBackStack();
+            } else {
+                finish();
+            }
+        }
+        return false;
     }
 }

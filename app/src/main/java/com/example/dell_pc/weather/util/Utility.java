@@ -91,7 +91,10 @@ public class Utility {
             String temp2 = weatherInfo.getString("temp2");
             String weatherDesp = weatherInfo.getString("weather");
             String publishTime = weatherInfo.getString("ptime");
-            saveWeatherInfo(context, provinceName, cityName, countryName, weatherCode, temp1, temp2, weatherDesp, publishTime);
+            String dayImg = weatherInfo.getString("img1");
+            String nightImg = weatherInfo.getString("img2");
+            saveWeatherInfo(context, provinceName, cityName, countryName, weatherCode,
+                    temp1, temp2, weatherDesp, publishTime, dayImg, nightImg);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -100,7 +103,8 @@ public class Utility {
 
     //将服务器返回的所有天气信息存储到SharedPreferences文件中
     public static void saveWeatherInfo(Context context, String provinceName, String cityName, String countryName,
-                                       String weatherCode, String temp1, String temp2, String weatherDesp, String publishTime) {
+                                       String weatherCode, String temp1, String temp2, String weatherDesp,
+                                       String publishTime, String dayImg, String nightImg) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
         editor.putBoolean("city_selected", true);
         if (!TextUtils.isEmpty(provinceName)) {     //不为空才进行覆盖
@@ -114,6 +118,8 @@ public class Utility {
         editor.putString("weather_desp", weatherDesp);
         editor.putString("publish_time", publishTime);
         editor.putString("current_date", getDate());
+        editor.putString("day_img", dayImg);
+        editor.putString("night_img", nightImg);
         editor.commit();
     }
 
@@ -130,8 +136,10 @@ public class Utility {
             String weatherDesp = weatherInfo.getString("weather");
             String publishTime = weatherInfo.getString("ptime");
             String updateTime = Utility.getDate();
+            String dayImg = weatherInfo.getString("img1");
+            String nightImg = weatherInfo.getString("img2");
             CountryControllerListViewItem item = new CountryControllerListViewItem(provinceName, cityName, countryName, weatherCode,
-                    temp1, temp2, weatherDesp, publishTime, updateTime);
+                    temp1, temp2, weatherDesp, publishTime, updateTime, dayImg, nightImg);
             LogUtil.e(Utility.class + "", "start return item");
             weatherDB.updateCountryWeather(item);
             LogUtil.e(Utility.class + "", "return item");
@@ -146,5 +154,17 @@ public class Utility {
     public static String getDate() {
         SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
         return format.format(System.currentTimeMillis());
+    }
+
+    //判断当前时间是早上还是晚上
+    public static boolean isDay() {
+        SimpleDateFormat format = new SimpleDateFormat("HH");
+        int now = Integer.valueOf(format.format(System.currentTimeMillis()));
+        LogUtil.e(Utility.class+"",now+"");
+        if (now >= 6 && now < 18) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

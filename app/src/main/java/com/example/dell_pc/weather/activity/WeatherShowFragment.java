@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dell_pc.weather.R;
@@ -28,8 +29,8 @@ public class WeatherShowFragment extends Fragment implements SwipeRefreshLayout.
     private TextView cityNameText;
     private TextView publishTimeText;
     private TextView weatherDespText;
-    private TextView temp1Text;
-    private TextView temp2Text;
+    private TextView tempText;
+    private ImageView weatherImg;
     private TextView currentDateText;
 
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -60,8 +61,8 @@ public class WeatherShowFragment extends Fragment implements SwipeRefreshLayout.
         cityNameText = (TextView) view.findViewById(R.id.city_name);
         publishTimeText = (TextView) view.findViewById(R.id.publish_time);
         weatherDespText = (TextView) view.findViewById(R.id.weather_desp);
-        temp1Text = (TextView) view.findViewById(R.id.temp1);
-        temp2Text = (TextView) view.findViewById(R.id.temp2);
+        tempText = (TextView) view.findViewById(R.id.temp);
+        weatherImg = (ImageView) view.findViewById(R.id.weather_img);
         currentDateText = (TextView) view.findViewById(R.id.current_date);
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.weather_show_swipeRefreshLayout);
@@ -69,7 +70,10 @@ public class WeatherShowFragment extends Fragment implements SwipeRefreshLayout.
         swipeRefreshLayout.setColorSchemeColors(R.color.blue);
 
         String countryCode = getActivity().getIntent().getStringExtra("country_code");
-        if (!TextUtils.isEmpty(countryCode)) {
+        String weatherCode = getActivity().getIntent().getStringExtra("weather_code");
+        if (!TextUtils.isEmpty(weatherCode)) {
+            queryWeatherInfo(weatherCode);
+        } else if (!TextUtils.isEmpty(countryCode)) {
             publishTimeText.setText("同步中");
             queryWeatherCode(countryCode);
         } else {
@@ -107,7 +111,7 @@ public class WeatherShowFragment extends Fragment implements SwipeRefreshLayout.
                     }
                 } else if ("weatherCode".equals(type)) {
                     String provinceName;
-                    Utility.handleWeatherResponse(getActivity(), response,getActivity().getIntent().getStringExtra("province_name"),
+                    Utility.handleWeatherResponse(getActivity(), response, getActivity().getIntent().getStringExtra("province_name"),
                             getActivity().getIntent().getStringExtra("city_name"));
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -133,20 +137,27 @@ public class WeatherShowFragment extends Fragment implements SwipeRefreshLayout.
     //从SharedPreferences文件中读取存储的天气信息，并显示到界面上
     private void showWeather() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        MyBaseActivity.title="天气详情";
+        MyBaseActivity.title = "天气详情";
         titleText.setText("天气详情");
-        String provinceName=preferences.getString("province_name","");
-        String cityName=preferences.getString("city_name", "");
-        String countryName=preferences.getString("country_name","");
-        String temp1=preferences.getString("temp1","");
-        String temp2=preferences.getString("temp2","");
-        String weatherDesp=preferences.getString("weather_desp","");
-        String publishTime=preferences.getString("publish_time","");
-        String currentDate=preferences.getString("current_date","");
-
-        cityNameText.setText(provinceName+"-"+cityName+"-"+countryName);
-        temp1Text.setText(temp1);
-        temp2Text.setText(temp2);
+        String provinceName = preferences.getString("province_name", "");
+        String cityName = preferences.getString("city_name", "");
+        String countryName = preferences.getString("country_name", "");
+        String temp1 = preferences.getString("temp1", "");
+        String temp2 = preferences.getString("temp2", "");
+        String weatherDesp = preferences.getString("weather_desp", "");
+        String publishTime = preferences.getString("publish_time", "");
+        String currentDate = preferences.getString("current_date", "");
+        String dayImg = preferences.getString("day_img", "");
+        String nightImg = preferences.getString("night_img", "");
+        cityNameText.setText(provinceName + "-" + cityName + "-" + countryName);
+        tempText.setText(temp2 + " 至 " + temp1);
+        String imgName;
+        if (Utility.isDay()) {
+            imgName = dayImg;
+        } else {
+            imgName = nightImg;
+        }
+        weatherImg.setImageResource(getActivity().getResources().getIdentifier(imgName.substring(0, imgName.length() - 4), "drawable", getActivity().getPackageName()));
         weatherDespText.setText(weatherDesp);
         publishTimeText.setText(publishTime + "发布");
         currentDateText.setText(currentDate);
@@ -154,9 +165,10 @@ public class WeatherShowFragment extends Fragment implements SwipeRefreshLayout.
 
         //如果是从CountryController 跳转而来，则将获取的天气信息存储到数据库
         if (getActivity().getIntent().getBooleanExtra("isFromCountryController", false)) {
-            CountryControllerListViewItem item = new CountryControllerListViewItem(provinceName,cityName,countryName,
-                    preferences.getString("weather_code",""),temp1,temp2,weatherDesp,publishTime,currentDate);
-            WeatherDB weatherDB=MyBaseActivity.weatherDB;
+            CountryControllerListViewItem item = new CountryControllerListViewItem(provinceName, cityName, countryName,
+                    preferences.getString("weather_code", ""), temp1, temp2,
+                    weatherDesp, publishTime, currentDate, dayImg, nightImg);
+            WeatherDB weatherDB = MyBaseActivity.weatherDB;
             weatherDB.saveCountryController(item);
             getActivity().getIntent().putExtra("isFromCountryController", false);
         }

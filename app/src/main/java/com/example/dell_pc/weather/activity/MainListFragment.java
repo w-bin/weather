@@ -1,7 +1,7 @@
 package com.example.dell_pc.weather.activity;
 
 import android.app.Fragment;
-import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -44,7 +44,7 @@ public class MainListFragment extends Fragment {
     private List<Country> countryList;
     private Province selectedProvince;
     private City selectedCity;
-    private int currentLevel;
+    public static int currentLevel;
     //private boolean isFromWeatherActivity;
 
     @Override
@@ -70,8 +70,7 @@ public class MainListFragment extends Fragment {
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
 
-       // weatherDB = WeatherDB.getInstance(getActivity());
-        weatherDB=MyBaseActivity.weatherDB;
+        weatherDB = MyBaseActivity.weatherDB;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -84,11 +83,13 @@ public class MainListFragment extends Fragment {
                 } else if (currentLevel == LEVEL_COUNTRY) {
                     String countryCode = countryList.get(position).getCountryCode();
                     getActivity().getIntent().putExtra("country_code", countryCode);
-                    getActivity().getIntent().putExtra("province_name",selectedProvince.getProvinceName());
-                    getActivity().getIntent().putExtra("city_name",selectedCity.getCityName());
+                    getActivity().getIntent().putExtra("province_name", selectedProvince.getProvinceName());
+                    getActivity().getIntent().putExtra("city_name", selectedCity.getCityName());
                     WeatherShowFragment weatherShowFragment = new WeatherShowFragment();
-                    FragmentManager fragmentManager = getFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.content_frame, weatherShowFragment).commit();
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    ft.replace(R.id.content_frame, weatherShowFragment);
+                    ft.addToBackStack(null);
+                    ft.commit();
                 }
             }
         });
@@ -105,7 +106,7 @@ public class MainListFragment extends Fragment {
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            MyBaseActivity.title="中国";
+            MyBaseActivity.title = "中国";
             titleText.setText("中国");
             currentLevel = LEVEL_PROVINCE;
         } else {
@@ -123,7 +124,7 @@ public class MainListFragment extends Fragment {
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            MyBaseActivity.title=selectedProvince.getProvinceName();
+            MyBaseActivity.title = selectedProvince.getProvinceName();
             titleText.setText(selectedProvince.getProvinceName());
             currentLevel = LEVEL_CITY;
         } else {
@@ -141,7 +142,7 @@ public class MainListFragment extends Fragment {
             }
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            MyBaseActivity.title=selectedCity.getCityName();
+            MyBaseActivity.title = selectedCity.getCityName();
             titleText.setText(selectedCity.getCityName());
             currentLevel = LEVEL_COUNTRY;
         } else {

@@ -14,14 +14,17 @@ public class CountryControllerListViewItem {
     private String weatherDesp;
     private String publishTime;
     private String updateTime;
+    private String dayImg;
+    private String nightImg;
 
     public CountryControllerListViewItem() {
     }
 
     public CountryControllerListViewItem(String provinceName, String cityName, String countryName, String weatherCode,
-                                         String temp1, String temp2, String weatherDesp, String publishTime, String updateTime) {
-        this.provinceName=provinceName;
-        this.cityName=cityName;
+                                         String temp1, String temp2, String weatherDesp, String publishTime,
+                                         String updateTime, String dayImg, String nightImg) {
+        this.provinceName = provinceName;
+        this.cityName = cityName;
         this.countryName = countryName;
         this.weatherCode = weatherCode;
         this.temp1 = temp1;
@@ -29,6 +32,24 @@ public class CountryControllerListViewItem {
         this.weatherDesp = weatherDesp;
         this.publishTime = publishTime;
         this.updateTime = updateTime;
+        this.dayImg = dayImg;
+        this.nightImg = nightImg;
+    }
+
+    public String getDayImg() {
+        return dayImg;
+    }
+
+    public void setDayImg(String dayImg) {
+        this.dayImg = dayImg;
+    }
+
+    public String getNightImg() {
+        return nightImg;
+    }
+
+    public void setNightImg(String nightImg) {
+        this.nightImg = nightImg;
     }
 
     public String getProvinceName() {

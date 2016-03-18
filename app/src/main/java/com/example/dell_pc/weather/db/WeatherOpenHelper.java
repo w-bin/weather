@@ -50,7 +50,9 @@ public class WeatherOpenHelper extends SQLiteOpenHelper {
             + "temp2 text, "
             + "weather_desp text, "
             + "publish_time text, "
-            + "update_time text)";
+            + "update_time text, "
+            + "day_img text, "
+            + "night_img text)";
 
     public WeatherOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);

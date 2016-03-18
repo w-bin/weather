@@ -15,7 +15,7 @@ import java.util.List;
  * Created by dell-pc on 2016/3/7.
  */
 public class WeatherDB {
-    public static final String DB_NAME = "my_weather10";
+    public static final String DB_NAME = "my_weather11";
     public static final int VERSION = 1;
     private static WeatherDB weatherDB;
     private SQLiteDatabase db;
@@ -146,6 +146,8 @@ public class WeatherDB {
             values.put("weather_desp", item.getWeatherDesp());
             values.put("publish_time", item.getPublishTime());
             values.put("update_time", Utility.getDate());
+            values.put("day_img",item.getDayImg());
+            values.put("night_img",item.getNightImg());
             db.insert("CountryController", null, values);
         }
     }
@@ -171,6 +173,8 @@ public class WeatherDB {
                 item.setWeatherDesp(cursor.getString(cursor.getColumnIndex("weather_desp")));
                 item.setPublishTime(cursor.getString(cursor.getColumnIndex("publish_time")));
                 item.setUpdateTime(cursor.getString(cursor.getColumnIndex("update_time")));
+                item.setDayImg(cursor.getString(cursor.getColumnIndex("day_img")));
+                item.setNightImg(cursor.getString(cursor.getColumnIndex("night_img")));
                 list.add(item);
             } while (cursor.moveToNext());
         }
@@ -188,6 +192,8 @@ public class WeatherDB {
         values.put("weather_desp", item.getWeatherDesp());
         values.put("publish_time", item.getPublishTime());
         values.put("update_time", Utility.getDate());
+        values.put("day_img",item.getDayImg());
+        values.put("night_img",item.getNightImg());
         db.update("CountryController", values, "country_name=?", new String[]{item.getCountryName()});
     }
 }
