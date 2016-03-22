@@ -1,6 +1,7 @@
 package com.example.dell_pc.weather.activity;
 
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,19 +10,22 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dell_pc.weather.R;
 import com.example.dell_pc.weather.model.WeatherDB;
+import com.example.dell_pc.weather.util.ImgUtil;
 import com.example.dell_pc.weather.util.LogUtil;
 
 /**
- * Created by dell-pc on 2016/3/11.
+ * Created by dell_pc on 2016/3/11.
  */
 public class MyBaseActivity extends ActionBarActivity {
     private DrawerLayout drawerLayout;
@@ -39,6 +43,32 @@ public class MyBaseActivity extends ActionBarActivity {
         setContentView(R.layout.base_activity);
         weatherDB = WeatherDB.getInstance(this);
         initView();
+    }
+
+    private void initView() {
+        titleText = (TextView) findViewById(R.id.title_text);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();    //调用onPrepareOptionsMenu
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                invalidateOptionsMenu();    //调用onPrepareOptionsMenu
+            }
+        };
+        actionBarDrawerToggle.syncState();
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         navigationView.setItemIconTintList(null);   //设置菜单图标恢复本来的颜色
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -77,32 +107,24 @@ public class MyBaseActivity extends ActionBarActivity {
                 return true;
             }
         });
-    }
 
-    private void initView() {
-        titleText = (TextView) findViewById(R.id.title_text);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true); //设置返回键可用
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.app_name, R.string.app_name) {
+        View view=navigationView.getHeaderView(0);
+        ImageView headerImg= (ImageView) view.findViewById(R.id.navigation_header_img);
+        String imgPath=PreferenceManager.getDefaultSharedPreferences(this).getString("personal_img","");
+        if(!TextUtils.isEmpty(imgPath)){
+            LogUtil.e(MyBaseActivity.class+"","set head img!!");
+            headerImg.setImageBitmap(ImgUtil.getImage(imgPath));
+        }
+        TextView personalName= (TextView) view.findViewById(R.id.navigation_header_name);
+        personalName.setText(PreferenceManager.getDefaultSharedPreferences(this).getString("personal_name","无"));
+        headerImg.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                invalidateOptionsMenu();    //调用onPrepareOptionsMenu
+            public void onClick(View v) {
+                Intent intent = new Intent(MyBaseActivity.this, PersonalInfoActivity.class);
+                startActivity(intent);
+                finish();
             }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                invalidateOptionsMenu();    //调用onPrepareOptionsMenu
-            }
-        };
-        actionBarDrawerToggle.syncState();
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        });
     }
 
     @Override
