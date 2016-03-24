@@ -76,29 +76,35 @@ public class MyBaseActivity extends ActionBarActivity {
             public boolean onNavigationItemSelected(MenuItem item) {
                 //item.setChecked(true);
                 switch (item.getItemId()) {
-                    case R.id.item_1:
+                    case R.id.menu_shouye:
                         Test0Fragment fragment = new Test0Fragment();
                         FragmentManager fragmentManager = getFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
                         break;
-                    case R.id.item_2:
+                    case R.id.menu_change:
                         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MyBaseActivity.this).edit();
                         editor.putBoolean("city_selected", false);
                         editor.commit();
-                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyBaseActivity.this);
                         MainListFragment mainListFragment = new MainListFragment();
                         FragmentManager fragmentManager1 = getFragmentManager();
                         fragmentManager1.beginTransaction().replace(R.id.content_frame, mainListFragment).commit();
                         break;
-                    case R.id.item_3:
+                    case R.id.menu_show:
                         WeatherShowFragment weatherShowFragment = new WeatherShowFragment();
                         FragmentManager fragmentManager2 = getFragmentManager();
                         fragmentManager2.beginTransaction().replace(R.id.content_frame, weatherShowFragment).commit();
                         break;
-                    case R.id.item_0:
+                    case R.id.menu_controller:
                         CountryControllerFragment countryControllerFragment = new CountryControllerFragment();
                         FragmentManager fragmentManager3 = getFragmentManager();
                         fragmentManager3.beginTransaction().replace(R.id.content_frame, countryControllerFragment).commit();
+                        break;
+                    case R.id.menu_about:
+                        Intent intent0 = new Intent(MyBaseActivity.this, ViewPagerActivity.class);
+                        startActivity(intent0);
+                        break;
+                    case R.id.menu_exit:
+                        finish();
                         break;
                     default:
                         break;
@@ -108,21 +114,20 @@ public class MyBaseActivity extends ActionBarActivity {
             }
         });
 
-        View view=navigationView.getHeaderView(0);
-        ImageView headerImg= (ImageView) view.findViewById(R.id.navigation_header_img);
-        String imgPath=PreferenceManager.getDefaultSharedPreferences(this).getString("personal_img","");
-        if(!TextUtils.isEmpty(imgPath)){
-            LogUtil.e(MyBaseActivity.class+"","set head img!!");
+        View view = navigationView.getHeaderView(0);
+        ImageView headerImg = (ImageView) view.findViewById(R.id.navigation_header_img);
+        String imgPath = PreferenceManager.getDefaultSharedPreferences(this).getString("personal_img", "");
+        if (!TextUtils.isEmpty(imgPath)) {
+            LogUtil.e(MyBaseActivity.class + "", "set head img!!");
             headerImg.setImageBitmap(ImgUtil.getImage(imgPath));
         }
-        TextView personalName= (TextView) view.findViewById(R.id.navigation_header_name);
-        personalName.setText(PreferenceManager.getDefaultSharedPreferences(this).getString("personal_name","无"));
+        TextView personalName = (TextView) view.findViewById(R.id.navigation_header_name);
+        personalName.setText(PreferenceManager.getDefaultSharedPreferences(this).getString("personal_name", "无"));
         headerImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyBaseActivity.this, PersonalInfoActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
     }

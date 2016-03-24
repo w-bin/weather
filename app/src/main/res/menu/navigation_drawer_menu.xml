@@ -3,48 +3,28 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/item_1"
-            android:icon="@drawable/left_menu"
+            android:id="@+id/menu_shouye"
+            android:icon="@drawable/iconfont_shouye"
             android:title="首页" />
         <item
-            android:id="@+id/item_2"
-            android:icon="@drawable/left_menu"
+            android:id="@+id/menu_change"
+            android:icon="@drawable/iconfont_qiehuan"
             android:title="切换城市" />
         <item
-            android:id="@+id/item_3"
-            android:icon="@drawable/left_menu"
+            android:id="@+id/menu_show"
+            android:icon="@drawable/iconfont_xiangqing"
             android:title="天气详情" />
         <item
-            android:id="@+id/item_0"
-            android:icon="@drawable/left_menu"
-            android:title="城市管理"/>
+            android:id="@+id/menu_controller"
+            android:icon="@drawable/iconfont_guanli"
+            android:title="城市管理" />
+        <item
+            android:id="@+id/menu_about"
+            android:icon="@drawable/iconfont_about"
+            android:title="关于" />
+        <item
+            android:id="@+id/menu_exit"
+            android:icon="@drawable/iconfont_exit"
+            android:title="退出" />
     </group>
-
-    <item android:title="SubItems">
-        <menu>
-            <item
-                android:id="@+id/subitem_4"
-                android:title="SubItem01" />
-            <item
-                android:id="@+id/subitem_5"
-                android:title="SubItem02" />
-            <item
-                android:id="@+id/subitem_6"
-                android:title="SubItem03" />
-        </menu>
-    </item>
-
-    <item android:title="SubItems">
-        <menu>
-            <item
-                android:id="@+id/subitem_7"
-                android:title="SubItem04" />
-            <item
-                android:id="@+id/subitem_8"
-                android:title="SubItem05" />
-            <item
-                android:id="@+id/subitem_9"
-                android:title="SubItem06" />
-        </menu>
-    </item>
 </menu>

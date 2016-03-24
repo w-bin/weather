@@ -24,62 +24,60 @@ public class ImgUtil {
 
     //4.4及以上系统使用这个方法处理图片
     @TargetApi(19)
-    public static Bitmap handleImageOnKitKat(Context context,Intent data){
-        String imagePath=null;
-        Uri uri=data.getData();
-        if(DocumentsContract.isDocumentUri(context, uri)){
+    public static Bitmap handleImageOnKitKat(Context context, Intent data) {
+        String imagePath = null;
+        Uri uri = data.getData();
+        if (DocumentsContract.isDocumentUri(context, uri)) {
             //如果是document类型的Uri,则通过document id处理
-            String docId=DocumentsContract.getDocumentId(uri);
-            if("com.android.providers.media.documents".equals(uri.getAuthority())){
-                String id=docId.split(":")[1];  //解析出数字格式的id
-                String selection= MediaStore.Images.Media._ID+"="+id;
-                imagePath=getImagePath(context,MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
-            }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
-                Uri contentUri= ContentUris.withAppendedId(
+            String docId = DocumentsContract.getDocumentId(uri);
+            if ("com.android.providers.media.documents".equals(uri.getAuthority())) {
+                String id = docId.split(":")[1];  //解析出数字格式的id
+                String selection = MediaStore.Images.Media._ID + "=" + id;
+                imagePath = getImagePath(context, MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+            } else if ("com.android.providers.downloads.documents".equals(uri.getAuthority())) {
+                Uri contentUri = ContentUris.withAppendedId(
                         Uri.parse("content://downloads/public_downloads"), Long.valueOf(docId));
-                imagePath=getImagePath(context,contentUri,null);
+                imagePath = getImagePath(context, contentUri, null);
             }
-        }else if("content".equalsIgnoreCase(uri.getScheme())){
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
             //如果不是document类型的Uri,则使用普通方式处理
-            imagePath=getImagePath(context,uri,null);
+            imagePath = getImagePath(context, uri, null);
         }
-        SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putString("personal_tmp_img",imagePath);     //保存临时头像路径
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString("personal_tmp_img", imagePath);     //保存临时头像路径
         editor.commit();
-        LogUtil.e(ImgUtil.class + "", imagePath + "!!!");
         return getImage(imagePath);
     }
 
     //4.4以下系统使用这个方法处理图片
-    public static Bitmap handleImageBeforeKitKat(Context context,Intent data){
-        Uri uri=data.getData();
-        String imagePath=getImagePath(context, uri, null);
-        SharedPreferences.Editor editor=PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putString("personal_tmp_img",imagePath);     //保存临时头像路径
+    public static Bitmap handleImageBeforeKitKat(Context context, Intent data) {
+        Uri uri = data.getData();
+        String imagePath = getImagePath(context, uri, null);
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putString("personal_tmp_img", imagePath);     //保存临时头像路径
         editor.commit();
-        LogUtil.e(ImgUtil.class+"",imagePath+"!!!");
         return getImage(imagePath);
     }
 
-    public static String getImagePath(Context context,Uri uri,String selection){
-        String path=null;
+    public static String getImagePath(Context context, Uri uri, String selection) {
+        String path = null;
         //通过Uri和selection来获取真实的图片路径
-        Cursor cursor=context.getContentResolver().query(uri, null, selection, null, null);
-        if(cursor!=null){
-            if(cursor.moveToFirst()){
-                path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        Cursor cursor = context.getContentResolver().query(uri, null, selection, null, null);
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
             }
             cursor.close();
         }
         return path;
     }
 
+    //对bitmap进行质量压缩
     public static Bitmap compressImage(Bitmap image) {
-
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
         int options = 100;
-        while ( baos.toByteArray().length / 1024>100) {	//循环判断如果压缩后图片是否大于100kb,大于继续压缩
+        while (baos.toByteArray().length / 1024 > 100) {    //循环判断如果压缩后图片是否大于100kb,大于继续压缩
             baos.reset();//重置baos即清空baos
             image.compress(Bitmap.CompressFormat.JPEG, options, baos);//这里压缩options%，把压缩后的数据存放到baos中
             options -= 10;//每次都减少10
@@ -89,13 +87,14 @@ public class ImgUtil {
         return bitmap;
     }
 
+    //传入图片路径，返回压缩后的bitmap
     public static Bitmap getImage(String srcPath) {
-        if(TextUtils.isEmpty(srcPath))  //如果图片路径为空 直接返回
+        if (TextUtils.isEmpty(srcPath))  //如果图片路径为空 直接返回
             return null;
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         //开始读入图片，此时把options.inJustDecodeBounds 设回true了
         newOpts.inJustDecodeBounds = true;
-        Bitmap bitmap = BitmapFactory.decodeFile(srcPath,newOpts);//此时返回bm为空
+        Bitmap bitmap = BitmapFactory.decodeFile(srcPath, newOpts);//此时返回bm为空
 
         newOpts.inJustDecodeBounds = false;
         int w = newOpts.outWidth;
